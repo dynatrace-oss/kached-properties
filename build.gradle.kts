@@ -1,5 +1,3 @@
-import io.gitlab.arturbosch.detekt.Detekt
-
 plugins {
     kotlin("jvm") version "1.4.32"
 
@@ -12,15 +10,6 @@ version = "0.1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
-
-    // This JCenter entry should be completely gone once JCenter is deprecated.
-    // See https://jfrog.com/blog/into-the-sunset-bintray-jcenter-gocenter-and-chartcenter/
-    jcenter {
-        content {
-            // Detekt needs 'kotlinx-html' for the HTML report.
-            includeGroup("org.jetbrains.kotlinx")
-        }
-    }
 }
 
 dependencies {
@@ -28,6 +17,13 @@ dependencies {
     testImplementation("io.mockk:mockk:1.10.6")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.16.0")
+}
+
+configurations {
+    all {
+        // Excluded due to requirement for kotlinx-html which is still in JCenter.
+        exclude("org.jetbrains.kotlinx", "kotlinx-html-jvm")
+    }
 }
 
 tasks.getByName<Test>("test") {
@@ -42,4 +38,7 @@ tasks.getByName<Task>("check") {
 detekt {
     buildUponDefaultConfig = true
     config = files("$projectDir/detekt-custom-config.yml")
+    reports {
+        html.enabled = false // Disabled due to requirement for kotlinx-html which is still in JCenter.
+    }
 }
