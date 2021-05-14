@@ -38,3 +38,8 @@ tasks.getByName<Test>("test") {
 tasks.getByName<Task>("check") {
     dependsOn("detektTest")
 }
+
+detekt {
+    buildUponDefaultConfig = true
+    config = files("$projectDir/detekt-custom-config.yml")
+}
