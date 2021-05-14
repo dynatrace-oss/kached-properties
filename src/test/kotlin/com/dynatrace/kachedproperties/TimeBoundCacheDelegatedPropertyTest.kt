@@ -18,7 +18,11 @@ class TimeBoundCacheDelegatedPropertyTest {
         val mockTimeSource = SimulatedTimeSource()
         val fetchValueFromDependency = mockk<() -> String>()
         every { fetchValueFromDependency() } returnsMany listOf("Call 1", "Call 2")
-        val cachedValue by cachedLazyFor(Duration.ofSeconds(5), { fetchValueFromDependency() }, timeSource = mockTimeSource)
+        val cachedValue by cachedLazyFor(
+            Duration.ofSeconds(5),
+            { fetchValueFromDependency() },
+            timeSource = mockTimeSource,
+        )
 
         assertEquals("Call 1", cachedValue)
         mockTimeSource.advanceBy(Duration.ofSeconds(2))
@@ -50,7 +54,11 @@ class TimeBoundCacheDelegatedPropertyTest {
             sleep(1000) // Simulating long network call.
             "Call ${dependencyCallCounter.getAndIncrement()}"
         }
-        val cachedValue by cachedLazyFor(Duration.ofSeconds(5), { fetchValueFromDependency() }, timeSource = mockTimeSource)
+        val cachedValue by cachedLazyFor(
+            Duration.ofSeconds(5),
+            { fetchValueFromDependency() },
+            timeSource = mockTimeSource,
+        )
 
         lateinit var cachedValueReadFromThread1: String
         lateinit var cachedValueReadFromThread2: String
@@ -107,7 +115,12 @@ class TimeBoundCacheDelegatedPropertyTest {
             sleep(1000) // Simulating long network call.
             "Call ${dependencyCallCounter.getAndIncrement()}"
         }
-        val cachedValue by cachedLazyFor(Duration.ofSeconds(5), { fetchValueFromDependency() }, executor, mockTimeSource)
+        val cachedValue by cachedLazyFor(
+            Duration.ofSeconds(5),
+            { fetchValueFromDependency() },
+            executor,
+            mockTimeSource,
+        )
 
         val cachedValueReadFromThread1: String = cachedValue
         mockTimeSource.advanceBy(Duration.ofSeconds(10))

@@ -3,7 +3,7 @@ package com.dynatrace.kachedproperties
 import java.time.Duration
 import java.util.concurrent.Executor
 
-class TimeBoundCache<T: Any>(
+class TimeBoundCache<T : Any>(
     private val updateDuration: Duration,
     private val provideValue: () -> T,
     private val lazyRefresh: Boolean,
@@ -32,6 +32,7 @@ class TimeBoundCache<T: Any>(
         return lastValue
     }
 
+    @Suppress("ReturnCount")
     private fun queueUpdateValue(): T {
         val last = lastValue
         if (beingUpdated) {

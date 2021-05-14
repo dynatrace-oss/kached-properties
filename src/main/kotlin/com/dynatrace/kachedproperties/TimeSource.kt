@@ -8,7 +8,7 @@ interface TimeSource {
     fun elapsedTime(): Duration
 }
 
-class SystemTimeSource: TimeSource {
+class SystemTimeSource : TimeSource {
     private var time: Instant = Instant.now()
 
     override fun markNow(): Instant {
@@ -22,7 +22,7 @@ class SystemTimeSource: TimeSource {
     }
 }
 
-class SimulatedTimeSource: TimeSource {
+class SimulatedTimeSource : TimeSource {
     private var time: Instant = Instant.now()
     private var currentTime: Instant = Instant.now()
 

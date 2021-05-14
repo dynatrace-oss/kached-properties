@@ -20,6 +20,6 @@ fun <T : Any> cachedBlockingFor(
 ) =
     TimeBoundCacheDelegatedProperty(TimeBoundCache(updateDuration, provideValue, false, null, timeSource))
 
-class TimeBoundCacheDelegatedProperty<T: Any>(val cache: TimeBoundCache<T>) {
+class TimeBoundCacheDelegatedProperty<T : Any>(val cache: TimeBoundCache<T>) {
     operator fun getValue(thisRef: Any?, property: KProperty<*>) = cache.getValue()
 }
