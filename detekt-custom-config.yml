@@ -1,0 +1,4 @@
+comments:
+  AbsentOrWrongFileLicense:
+    active: true
+    licenseTemplateFile: license.template

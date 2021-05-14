@@ -1,5 +1,8 @@
 plugins {
     kotlin("jvm") version "1.4.32"
+
+    // Tests and code quality.
+    id("io.gitlab.arturbosch.detekt") version "1.16.0"
 }
 
 group = "com.dynatrace.kached-properties"
@@ -13,8 +16,29 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")
     testImplementation("io.mockk:mockk:1.10.6")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.16.0")
+}
+
+configurations {
+    all {
+        // Excluded due to requirement for kotlinx-html which is still in JCenter.
+        exclude("org.jetbrains.kotlinx", "kotlinx-html-jvm")
+    }
 }
 
 tasks.getByName<Test>("test") {
     useJUnitPlatform()
+}
+
+// A workaround for https://github.com/detekt/detekt/issues/2956
+tasks.getByName<Task>("check") {
+    dependsOn("detektTest")
+}
+
+detekt {
+    buildUponDefaultConfig = true
+    config = files("$projectDir/detekt-custom-config.yml")
+    reports {
+        html.enabled = false // Disabled due to requirement for kotlinx-html which is still in JCenter.
+    }
 }
