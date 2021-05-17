@@ -2,7 +2,7 @@ plugins {
     kotlin("jvm") version "1.4.32"
 
     // Tests and code quality.
-    id("io.gitlab.arturbosch.detekt") version "1.16.0"
+    id("io.gitlab.arturbosch.detekt") version "1.17.0"
 }
 
 group = "com.dynatrace.kached-properties"
@@ -16,7 +16,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")
     testImplementation("io.mockk:mockk:1.10.6")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.16.0")
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.17.0")
 }
 
 configurations {
@@ -28,11 +28,6 @@ configurations {
 
 tasks.getByName<Test>("test") {
     useJUnitPlatform()
-}
-
-// A workaround for https://github.com/detekt/detekt/issues/2956
-tasks.getByName<Task>("check") {
-    dependsOn("detektTest")
 }
 
 detekt {
