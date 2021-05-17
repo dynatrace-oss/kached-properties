@@ -1,4 +1,5 @@
 comments:
+  excludes: []
   AbsentOrWrongFileLicense:
     active: true
     licenseTemplateFile: license.template
