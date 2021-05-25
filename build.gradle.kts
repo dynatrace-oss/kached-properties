@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "1.5.0"
+    kotlin("jvm") version "1.5.10"
 
     // Tests and code quality.
     id("io.gitlab.arturbosch.detekt") version "1.17.0"
