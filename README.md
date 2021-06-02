@@ -21,7 +21,18 @@ There are two delegated property builders available, depending on your business 
 
 ## Installation
 
-Maven publication - work in progress!
+The library is published to Maven Central. An example of consuming it from Gradle using Kotlin DSL:
+
+```kotlin
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    ...
+    implementation("com.dynatrace:kached-properties:1.0.0")
+}
+```
 
 ## Contributing
 

@@ -106,3 +106,13 @@ tasks {
         sign(publishing.publications["mavenJava"])
     }
 }
+
+val validateVersionInReadme by tasks.creating<Task> {
+    doLast {
+        require(
+            File("README.md").readText().contains("implementation(\"com.dynatrace:kached-properties:$version\")")
+        ) { "Library versions stated in build.gradle.kts and in README.md should be equal!" }
+    }
+}
+
+tasks.getByName("check").dependsOn(validateVersionInReadme)
