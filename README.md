@@ -6,9 +6,9 @@ This library approaches a problem of time-bound values caching by exposing a sim
 simply say *"cache the result of a function for 5 minutes"* by writing:
 
 ```kotlin
-val activeSatellites by cachedLazyFor(Duration.ofMinutes(5)) {
+val activeSatellites by cachedLazyFor(Duration.ofMinutes(5), {
     fetchActiveSatellites()
-}
+})
 ```
 
 There are two delegated property builders available, depending on your business needs:
