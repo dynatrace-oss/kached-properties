@@ -54,11 +54,7 @@ class TimeBoundCache<T : Any>(
 
         beingUpdated = true
         if (!lazyRefresh || executor == null) {
-            try {
-                updateValue()
-            } finally {
-                beingUpdated = false
-            }
+            updateValue()
             return lastValue
         }
 
