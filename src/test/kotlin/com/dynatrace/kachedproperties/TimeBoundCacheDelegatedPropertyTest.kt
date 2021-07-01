@@ -168,10 +168,9 @@ class TimeBoundCacheDelegatedPropertyTest {
         verify(exactly = 2) { fetchValueFromDependency() }
     }
 
-    // TODO #23 - this test captures incorrect behavior. Fix will come in a separate commit.
     @Test
     @Suppress("TooGenericExceptionThrown")
-    fun `INCORRECTLY doesn't retry fetching value on next request when fetching value threw an exception - lazy`() {
+    fun `retries fetching value on next request when fetching value threw an exception - lazy version`() {
         val mockTimeSource = SimulatedTimeSource()
         val fetchValueFromDependency = mockk<() -> String>()
         val dependencyCallCounter = AtomicInteger(1)
@@ -200,18 +199,17 @@ class TimeBoundCacheDelegatedPropertyTest {
         assertEquals("Call 1", cachedValue)
         mockTimeSource.advanceBy(Duration.ofSeconds(10))
         sleep(10)
-        assertEquals("Call 1", cachedValue)
+        assertEquals("Call 3", cachedValue)
         mockTimeSource.advanceBy(Duration.ofSeconds(10))
         sleep(10)
-        assertEquals("Call 1", cachedValue)
+        assertEquals("Call 3", cachedValue)
 
-        verify(exactly = 2) { fetchValueFromDependency() }
+        verify(exactly = 4) { fetchValueFromDependency() }
     }
 
-    // TODO #23 - this test captures incorrect behavior. Fix will come in a separate commit.
     @Test
     @Suppress("TooGenericExceptionThrown")
-    fun `INCORRECTLY doesn't retry fetching value on next request when fetching value threw an exception - blocking`() {
+    fun `retries fetching value on next request when fetching value threw an exception - blocking version`() {
         val mockTimeSource = SimulatedTimeSource()
         val fetchValueFromDependency = mockk<() -> String>()
         val dependencyCallCounter = AtomicInteger(1)
@@ -239,14 +237,14 @@ class TimeBoundCacheDelegatedPropertyTest {
         }
         mockTimeSource.advanceBy(Duration.ofSeconds(10))
         sleep(10)
-        assertEquals("Call 1", cachedValue)
+        assertEquals("Call 3", cachedValue)
         mockTimeSource.advanceBy(Duration.ofSeconds(10))
         sleep(10)
-        assertEquals("Call 1", cachedValue)
+        assertEquals("Call 4", cachedValue)
         mockTimeSource.advanceBy(Duration.ofSeconds(10))
         sleep(10)
-        assertEquals("Call 1", cachedValue)
+        assertEquals("Call 5", cachedValue)
 
-        verify(exactly = 2) { fetchValueFromDependency() }
+        verify(exactly = 5) { fetchValueFromDependency() }
     }
 }

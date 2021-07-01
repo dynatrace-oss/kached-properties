@@ -54,20 +54,26 @@ class TimeBoundCache<T : Any>(
 
         beingUpdated = true
         if (!lazyRefresh || executor == null) {
-            updateValue()
-            beingUpdated = false
+            try {
+                updateValue()
+            } finally {
+                beingUpdated = false
+            }
             return lastValue
         }
 
         executor.execute {
             updateValue()
-            beingUpdated = false
         }
         return last
     }
 
     private fun updateValue() {
-        lastValue = provideValue()
-        timeSource.markNow()
+        try {
+            lastValue = provideValue()
+            timeSource.markNow()
+        } finally {
+            beingUpdated = false
+        }
     }
 }
