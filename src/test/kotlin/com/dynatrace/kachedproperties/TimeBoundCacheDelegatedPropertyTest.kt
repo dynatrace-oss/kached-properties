@@ -18,6 +18,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import java.lang.Thread.sleep
 import java.time.Duration
 import java.util.concurrent.Executors
@@ -165,5 +166,85 @@ class TimeBoundCacheDelegatedPropertyTest {
         assertEquals(setOf("Call 1", "Call 2"), retrievedValues)
 
         verify(exactly = 2) { fetchValueFromDependency() }
+    }
+
+    @Test
+    @Suppress("TooGenericExceptionThrown")
+    fun `retries fetching value on next request when fetching value threw an exception - lazy version`() {
+        val mockTimeSource = SimulatedTimeSource()
+        val fetchValueFromDependency = mockk<() -> String>()
+        val dependencyCallCounter = AtomicInteger(1)
+        every { fetchValueFromDependency() } answers {
+            if (dependencyCallCounter.get() == 2) {
+                throw RuntimeException(
+                    "A ${dependencyCallCounter.getAndIncrement()} call to the dependency failed! " +
+                        "Next will be ${dependencyCallCounter.get()}"
+                )
+            } else {
+                "Call ${dependencyCallCounter.getAndIncrement()}"
+            }
+        }
+        val cachedValue by cachedLazyFor(
+            Duration.ofSeconds(5),
+            { fetchValueFromDependency() },
+            timeSource = mockTimeSource,
+        )
+
+        assertEquals("Call 1", cachedValue)
+        mockTimeSource.advanceBy(Duration.ofSeconds(10))
+        sleep(10)
+        assertEquals("Call 1", cachedValue)
+        mockTimeSource.advanceBy(Duration.ofSeconds(10))
+        sleep(10)
+        assertEquals("Call 1", cachedValue)
+        mockTimeSource.advanceBy(Duration.ofSeconds(10))
+        sleep(10)
+        assertEquals("Call 3", cachedValue)
+        mockTimeSource.advanceBy(Duration.ofSeconds(10))
+        sleep(10)
+        assertEquals("Call 3", cachedValue)
+
+        verify(exactly = 4) { fetchValueFromDependency() }
+    }
+
+    @Test
+    @Suppress("TooGenericExceptionThrown")
+    fun `retries fetching value on next request when fetching value threw an exception - blocking version`() {
+        val mockTimeSource = SimulatedTimeSource()
+        val fetchValueFromDependency = mockk<() -> String>()
+        val dependencyCallCounter = AtomicInteger(1)
+        every { fetchValueFromDependency() } answers {
+            if (dependencyCallCounter.get() == 2) {
+                throw RuntimeException(
+                    "A ${dependencyCallCounter.getAndIncrement()} call to the dependency failed! " +
+                        "Next will be ${dependencyCallCounter.get()}"
+                )
+            } else {
+                "Call ${dependencyCallCounter.getAndIncrement()}"
+            }
+        }
+        val cachedValue by cachedBlockingFor(
+            Duration.ofSeconds(5),
+            { fetchValueFromDependency() },
+            timeSource = mockTimeSource,
+        )
+
+        assertEquals("Call 1", cachedValue)
+        mockTimeSource.advanceBy(Duration.ofSeconds(10))
+        sleep(10)
+        assertThrows<RuntimeException> {
+            cachedValue
+        }
+        mockTimeSource.advanceBy(Duration.ofSeconds(10))
+        sleep(10)
+        assertEquals("Call 3", cachedValue)
+        mockTimeSource.advanceBy(Duration.ofSeconds(10))
+        sleep(10)
+        assertEquals("Call 4", cachedValue)
+        mockTimeSource.advanceBy(Duration.ofSeconds(10))
+        sleep(10)
+        assertEquals("Call 5", cachedValue)
+
+        verify(exactly = 5) { fetchValueFromDependency() }
     }
 }
