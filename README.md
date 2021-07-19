@@ -30,7 +30,7 @@ repositories {
 
 dependencies {
     ...
-    implementation("com.dynatrace:kached-properties:1.0.0")
+    implementation("com.dynatrace:kached-properties:1.0.1")
 }
 ```
 
