@@ -18,7 +18,7 @@ repositories {
 }
 
 dependencies {
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
     testImplementation("io.mockk:mockk:1.12.1")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.18.1")
