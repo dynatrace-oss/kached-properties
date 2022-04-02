@@ -1,3 +1,5 @@
+import io.gitlab.arturbosch.detekt.Detekt
+
 plugins {
     kotlin("jvm") version "1.6.20"
 
@@ -35,9 +37,9 @@ tasks.getByName<Test>("test") {
     useJUnitPlatform()
 }
 
-detekt {
+tasks.withType<Detekt>().configureEach {
     buildUponDefaultConfig = true
-    config = files("$projectDir/detekt-custom-config.yml")
+    config.setFrom(files("$projectDir/detekt-custom-config.yml"))
     reports {
         html.enabled = false // Disabled due to requirement for kotlinx-html which is still in JCenter.
     }
