@@ -4,7 +4,7 @@ plugins {
     kotlin("jvm") version "1.6.21"
 
     // Tests and code quality.
-    id("io.gitlab.arturbosch.detekt") version "1.19.0"
+    id("io.gitlab.arturbosch.detekt") version "1.20.0"
 
     // Publishing.
     maven
