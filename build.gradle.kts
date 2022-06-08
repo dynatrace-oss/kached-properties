@@ -1,7 +1,7 @@
 import io.gitlab.arturbosch.detekt.Detekt
 
 plugins {
-    kotlin("jvm") version "1.6.21"
+    kotlin("jvm") version "1.7.0"
 
     // Tests and code quality.
     id("io.gitlab.arturbosch.detekt") version "1.20.0"
